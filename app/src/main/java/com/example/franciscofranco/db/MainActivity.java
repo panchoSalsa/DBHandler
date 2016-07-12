@@ -9,10 +9,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    private ListView obj;
+    private ArrayList<String> arrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,19 +28,37 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         DBHandler db = new DBHandler(this);
+        arrayList = new ArrayList<String>();
 
-        db.addShop(new Shop(1, "Dockers", "475 Brannan St #330, San Francisco,"
-                + " CA 94107, United States"));
-        db.addShop(new Shop(2, "Town Bakers", "Beverly Hills, CA 90210, USA"));
-
+//        addShop(new Shop(1, "Dockers", "475 Brannan St #330, San Francisco,"
+//                + " CA 94107, United States"));
+//        addShop(new Shop(2, "Town Bakers", "Beverly Hills, CA 90210, USA"));
 
         List<Shop> shops = db.getAllShops();
 
         for (Shop shop: shops) {
-            String log = "Id: " + shop.getId() + " ,Name: " + shop.getName() +
-                    " ,Address: " + shop.getAddress();
-            Log.d("FRANCO_DEBUG", log);
+            arrayList.add(shop.getAddress());
         }
+
+
+        ArrayAdapter arrayAdapter = new ArrayAdapter(this,
+                android.R.layout.simple_expandable_list_item_1, arrayList);
+
+        obj = (ListView) findViewById(R.id.listView1);
+        obj.setAdapter(arrayAdapter);
+        obj.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                Log.d("FRANCO_DEBUG", "id is :" + Integer.toString((int) arg3));
+            }
+        });
+
+
+//        for (Shop shop: shops) {
+//            String log = "Id: " + shop.getId() + " ,Name: " + shop.getName() +
+//                    " ,Address: " + shop.getAddress();
+//            Log.d("FRANCO_DEBUG", log);
+//        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
